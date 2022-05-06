@@ -1,0 +1,70 @@
+name: Build&Push docker container image with SHA tag
+
+on:
+  workflow_call:
+    inputs:
+      repository:
+        required: true
+        type: string
+      tag:
+        required: true
+        type: string
+    secrets:
+      awsAccountID:
+        required: true
+      awsRegion:
+        required: true
+      slackBuildWebhook:
+        required: true
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: checkout the files
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1.6.1
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.awsAccountID }}:role/github-actions
+          role-session-name: buildsession
+          aws-region: ${{ secrets.awsRegion }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}:${{ inputs.tag }}
+          cache-from: type=gha
+          cache-to: type=gha
+
+      - name: Report Status
+        if: always()
+        uses: ravsamhq/notify-slack-action@master
+        with:
+          status: ${{ job.status }}
+          notify_when: 'failure'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.slackBuildWebhook }}
