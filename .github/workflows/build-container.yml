@@ -18,7 +18,6 @@ on:
         required: true
       nodeAuthToken:
         required: false
-        default: ""
 
 jobs:
   build_and_push:
