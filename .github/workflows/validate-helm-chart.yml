@@ -6,6 +6,9 @@ on:
       path:
         required: true
         type: string
+    secrets:
+      slackBuildWebhook:
+        required: true
 
 jobs:
   validate_helm:
