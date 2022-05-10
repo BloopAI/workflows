@@ -55,4 +55,9 @@ jobs:
           git config --global user.name ${{ inputs.gitUsername }}
           git config --global user.email ${{ inputs.gitEmail }}
           git remote add origin2 https://${{ inputs.gitUsername }}:${{ secrets.pat }}@github.com/${repositoryOwner}/${repository}.git
+
+          # push tag
           git push origin2 ${tag}
+
+          # create release
+          gh release create ${tag}
