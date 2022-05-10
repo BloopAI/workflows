@@ -46,6 +46,7 @@ jobs:
         shell: bash
         run: |
           repository=${{ github.event.repository.name }}
+          repositoryOwner=${{ github.repository_owner }}
           branch=${{ steps.extract_branch.outputs.branch }};
           tag=$(echo ${branch} | cut -d "/" -f2);
           git tag ${tag} ${branch}
@@ -53,5 +54,5 @@ jobs:
           # setup git
           git config --global user.name ${{ inputs.gitUsername }}
           git config --global user.email ${{ inputs.gitEmail }}
-          git remote add origin2 https://${{ inputs.gitUsername }}:${{ secrets.pat }}@github.com/${repository}.git
+          git remote add origin2 https://${{ inputs.gitUsername }}:${{ secrets.pat }}@github.com/${repositoryOwner}/${repository}.git
           git push origin2 ${tag}
