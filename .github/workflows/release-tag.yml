@@ -1,0 +1,73 @@
+name: Create tag based on the release branch name
+
+on:
+  workflow_call:
+    inputs:
+      gitUsername:
+        required: true
+        type: string
+      gitEmail:
+        required: true
+        type: string
+    secrets:
+      slackBuildWebhook:
+        required: true
+      pat:
+        required: true
+
+jobs:
+  release_tag:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: checkout the files
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.pat }}
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
+      - name: Validate release tag
+        shell: bash
+        run: |
+          branch=${{ steps.extract_branch.outputs.branch }};
+          tag=$(echo ${branch} | cut -d "/" -f2)
+          server_regex="^v(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(\\-[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?(\\+[0-9A-Za-z-]+(\\.[0-9A-Za-z-]+)*)?$";
+          if [[ ! "$tag" =~ $SEMVER_REGEX ]]; then echo "Version $version doesn't match semver"; exit 1; fi
+
+      - name: Push release tag
+        shell: bash
+        run: |
+          repository=${{ github.event.repository.name }}
+          repositoryOwner=${{ github.repository_owner }}
+          branch=${{ steps.extract_branch.outputs.branch }};
+          tag=$(echo ${branch} | cut -d "/" -f2);
+          git tag ${tag} ${branch}
+
+          # setup git
+          git config --global user.name ${{ inputs.gitUsername }}
+          git config --global user.email ${{ inputs.gitEmail }}
+          git remote add origin2 https://${{ inputs.gitUsername }}:${{ secrets.pat }}@github.com/${repositoryOwner}/${repository}.git
+
+          # push tag
+          git push origin2 ${tag}
+
+          # create release
+          echo ${{ secrets.pat }} | gh auth login --with-token
+          gh release create ${tag}
+
+      - name: Report Status
+        if: always()
+        uses: ravsamhq/notify-slack-action@master
+        with:
+          status: ${{ job.status }}
+          notify_when: 'failure'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.slackBuildWebhook }}
