@@ -44,6 +44,8 @@ jobs:
 
       - name: Push release tag
         shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.pat }}
         run: |
           branch=${{ steps.extract_branch.outputs.branch }};
           tag=$(echo ${branch} | cut -d "/" -f2);
