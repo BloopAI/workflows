@@ -62,3 +62,12 @@ jobs:
           # create release
           echo ${{ secrets.pat }} | gh auth login --with-token
           gh release create ${tag}
+
+      - name: Report Status
+        if: always()
+        uses: ravsamhq/notify-slack-action@master
+        with:
+          status: ${{ job.status }}
+          notify_when: 'failure'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.slackBuildWebhook }}
