@@ -2,6 +2,13 @@ name: Create tag based on the release branch name
 
 on:
   workflow_call:
+    inputs:
+      gitUsername:
+        required: true
+        type: string
+      gitEmail:
+        required: true
+        type: string
     secrets:
       awsAccountID:
         required: true
@@ -41,4 +48,8 @@ jobs:
           branch=${{ steps.extract_branch.outputs.branch }};
           tag=$(echo ${branch} | cut -d "/" -f2);
           git tag ${tag} ${branch}
+
+          # setup git
+          git config --global user.name ${{ inputs.gitUsername }}
+          git config --global user.email ${{ inputs.gitEmail }}
           git push origin ${tag}
