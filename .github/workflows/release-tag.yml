@@ -1,0 +1,32 @@
+name: Create tag based on the release branch name
+
+on:
+  workflow_call:
+    secrets:
+      awsAccountID:
+        required: true
+      awsRegion:
+        required: true
+      slackBuildWebhook:
+        required: true
+
+jobs:
+  release_tag:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: checkout the files
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
+      - name: Print branch name
+        shell: bash
+        run: echo ${{ steps.extract_branch.outputs.branch }}
