@@ -10,11 +10,9 @@ on:
         required: true
         type: string
     secrets:
-      awsAccountID:
-        required: true
-      awsRegion:
-        required: true
       slackBuildWebhook:
+        required: true
+      pat:
         required: true
 
 jobs:
@@ -26,6 +24,7 @@ jobs:
     steps:
       - name: checkout the files
         uses: actions/checkout@v2
+        token: ${{ secrets.pat }}
         with:
           persist-credentials: false
 
@@ -52,4 +51,4 @@ jobs:
           # setup git
           git config --global user.name ${{ inputs.gitUsername }}
           git config --global user.email ${{ inputs.gitEmail }}
-          git push origin2 ${tag}
+          git push origin ${tag}
