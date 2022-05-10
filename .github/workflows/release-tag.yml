@@ -44,9 +44,8 @@ jobs:
 
       - name: Push release tag
         shell: bash
-        env:
-          GITHUB_TOKEN: ${{ secrets.pat }}
         run: |
+          repository=${{ github.event.repository.name }}
           branch=${{ steps.extract_branch.outputs.branch }};
           tag=$(echo ${branch} | cut -d "/" -f2);
           git tag ${tag} ${branch}
@@ -54,4 +53,5 @@ jobs:
           # setup git
           git config --global user.name ${{ inputs.gitUsername }}
           git config --global user.email ${{ inputs.gitEmail }}
-          git push origin ${tag}
+          git remote add origin2 https://${{ inputs.gitUsername }}:${{ secrets.pat }}@github.com/${repository}.git
+          git push origin2 ${tag}
