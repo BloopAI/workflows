@@ -60,4 +60,5 @@ jobs:
           git push origin2 ${tag}
 
           # create release
+          echo ${{ secrets.pat }} | gh auth login --with-token
           gh release create ${tag}
