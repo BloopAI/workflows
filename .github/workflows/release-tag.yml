@@ -3,6 +3,9 @@ name: Create tag based on the release branch name
 on:
   workflow_call:
     inputs:
+      gitRepository:
+        required: true
+        type: string
       gitUsername:
         required: true
         type: string
@@ -52,4 +55,5 @@ jobs:
           # setup git
           git config --global user.name ${{ inputs.gitUsername }}
           git config --global user.email ${{ inputs.gitEmail }}
-          git push origin ${tag}
+          git remote add origin2 ${{ inputs.gitRepository }}
+          git push origin2 ${tag}
