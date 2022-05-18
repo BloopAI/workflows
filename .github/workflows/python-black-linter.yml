@@ -24,6 +24,7 @@ jobs:
         if ! black --check .; then
           echo;
           echo "Code formatting with black was not performed"
+        fi
 
     - name: Report Status
       if: always()
