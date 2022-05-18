@@ -1,0 +1,35 @@
+name: Lint python code with black linter
+
+on:
+  workflow_call:
+    secrets:
+      slackBuildWebhook:
+        required: true
+
+jobs:
+  lint_code:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install black
+    - name: Lint code
+      run: |
+        if ! black --check .; then
+          echo;
+          echo "Code formatting with black was not performed"
+
+    - name: Report Status
+      if: always()
+      uses: ravsamhq/notify-slack-action@master
+      with:
+        status: ${{ job.status }}
+        notify_when: 'failure'
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.slackBuildWebhook }}
