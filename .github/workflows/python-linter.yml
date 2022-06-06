@@ -1,4 +1,4 @@
-name: Lint python code with black linter
+name: Lint python code
 
 on:
   workflow_call:
