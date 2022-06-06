@@ -31,7 +31,7 @@ jobs:
 
     - name: Check isort linter
       run: |
-        if ! isort --check .; then
+        if ! isort --profile black --check .; then
           echo
           echo "import sorting with isort was not performed"
           exit 1
