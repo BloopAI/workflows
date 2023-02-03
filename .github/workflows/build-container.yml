@@ -56,8 +56,8 @@ jobs:
           context: .
           push: true
           tags: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}:${{ inputs.tag }}
-          cache-from: type=gha, scope=${{ github.workflow }}
-          cache-to: type=gha,mode=max, scope=${{ github.workflow }}
+          cache-from: type=local,src=/docker_cache
+          cache-to: type=local,dest=/docker_cache,mode=max
           build-args: |
            NODE_AUTH_TOKEN=${{ secrets.nodeAuthToken }}
 
