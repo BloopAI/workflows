@@ -9,11 +9,11 @@ on:
       tag:
         required: true
         type: string
-      build-arts:
+      build-args:
         required: false
         type: string
       runner:
-        required: true
+        required: false
         default: ubuntu-latest
         type: string
     secrets:
