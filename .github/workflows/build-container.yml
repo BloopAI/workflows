@@ -20,7 +20,6 @@ on:
         required: true
       build-args:
         required: false
-        type: string
       slackBuildWebhook:
         required: true
       nodeAuthToken:
