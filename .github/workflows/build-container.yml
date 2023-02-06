@@ -9,6 +9,9 @@ on:
       tag:
         required: true
         type: string
+      build-arts:
+        required: false
+        type: string
       runner:
         required: true
         default: ubuntu-latest
@@ -60,6 +63,7 @@ jobs:
           cache-to: type=local,dest=/docker_cache,mode=max
           build-args: |
            NODE_AUTH_TOKEN=${{ secrets.nodeAuthToken }}
+           ${{ inputs.build-args }}
 
       - name: Report Status
         if: always()
