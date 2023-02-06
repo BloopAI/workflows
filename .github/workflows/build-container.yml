@@ -9,9 +9,6 @@ on:
       tag:
         required: true
         type: string
-      build-args:
-        required: false
-        type: string
       runner:
         required: false
         default: ubuntu-latest
@@ -21,6 +18,9 @@ on:
         required: true
       awsRegion:
         required: true
+      build-args:
+        required: false
+        type: string
       slackBuildWebhook:
         required: true
       nodeAuthToken:
@@ -63,7 +63,7 @@ jobs:
           cache-to: type=local,dest=docker_cache,mode=max
           build-args: |
            NODE_AUTH_TOKEN=${{ secrets.nodeAuthToken }}
-           ${{ inputs.build-args }}
+           ${{ secrets.build-args }}
 
       - name: Report Status
         if: always()
