@@ -35,7 +35,6 @@ jobs:
       - name: checkout the files
         uses: actions/checkout@v3
         with:
-          persist-credentials: false
           lfs: true
 
       - name: configure AWS credentials
