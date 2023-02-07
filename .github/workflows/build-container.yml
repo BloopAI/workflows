@@ -24,8 +24,6 @@ on:
         required: true
       nodeAuthToken:
         required: false
-      githubToken:
-        required: false
 
 jobs:
   build_and_push:
@@ -50,13 +48,6 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.githubToken }}
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
@@ -67,7 +58,7 @@ jobs:
           push: true
           tags: |
             ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}:${{ inputs.tag }}
-            ghcr.io/bloopai/bloop:${{ inputs.tag }}
+            bloop
           cache-from: type=local,src=docker_cache
           cache-to: type=local,dest=docker_cache,mode=max
           build-args: |
