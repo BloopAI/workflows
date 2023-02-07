@@ -41,7 +41,7 @@ jobs:
         run: git lfs pull
 
       - name: configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1.6.1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           role-to-assume: arn:aws:iam::${{ secrets.awsAccountID }}:role/github-actions
           role-session-name: buildsession
