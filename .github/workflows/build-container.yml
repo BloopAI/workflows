@@ -64,6 +64,7 @@ jobs:
           cache-from: type=local,src=docker_cache
           cache-to: type=local,dest=docker_cache,mode=max
           build-args: |
+           BUILDKIT_INLINE_CACHE=1
            NODE_AUTH_TOKEN=${{ secrets.nodeAuthToken }}
            ${{ secrets.build-args }}
 
