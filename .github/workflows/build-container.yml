@@ -60,6 +60,7 @@ jobs:
           context: .
           push: true
           tags: |
+            ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}:latest
             ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}:${{ inputs.tag }}
           cache-from: type=registry,ref=${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}
           cache-to: type=inline
