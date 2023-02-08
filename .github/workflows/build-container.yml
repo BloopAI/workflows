@@ -62,7 +62,7 @@ jobs:
           tags: |
             ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}:${{ inputs.tag }}
           cache-from: type=registry,ref=${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}
-          cache-to: type=registry,ref=${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }},max
+          cache-to: type=registry,ref=${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}
           build-args: |
            NODE_AUTH_TOKEN=${{ secrets.nodeAuthToken }}
            ${{ secrets.build-args }}
