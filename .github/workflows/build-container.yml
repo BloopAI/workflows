@@ -67,12 +67,3 @@ jobs:
           build-args: |
            NODE_AUTH_TOKEN=${{ secrets.nodeAuthToken }}
            ${{ secrets.build-args }}
-
-      - name: Report Status
-        if: always()
-        uses: ravsamhq/notify-slack-action@master
-        with:
-          status: ${{ job.status }}
-          notify_when: 'failure'
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.slackBuildWebhook }}
