@@ -37,9 +37,6 @@ jobs:
         with:
           lfs: true
 
-      - name: LFS
-        run: git lfs pull
-
       - name: configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -63,7 +60,7 @@ jobs:
             ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}:latest
             ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}:${{ inputs.tag }}
           cache-from: type=registry,ref=${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}
-          cache-to: type=inline,mode=max
+          cache-to: type=registry,ref=${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }},mode=max
           build-args: |
            NODE_AUTH_TOKEN=${{ secrets.nodeAuthToken }}
            ${{ secrets.build-args }}
